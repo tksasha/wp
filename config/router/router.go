@@ -17,6 +17,8 @@ func Router() {
   switch os.Args[1] {
     case "add":
       new(PhrasesController).Create()
+    case "list":
+      new(PhrasesController).Index()
     default:
       fmt.Println("undefined command")
   }
