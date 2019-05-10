@@ -11,17 +11,41 @@ import (
 )
 
 func init() {
+  prepareWorkDir()
+
+  prepareDB()
+}
+
+func prepareWorkDir() {
+  var workDir bytes.Buffer
+
+  if dir, err := os.UserHomeDir(); err == nil {
+    workDir.WriteString(dir)
+  } else {
+    panic(err)
+  }
+
+  workDir.WriteString("/.wp")
+
+  if err := os.MkdirAll(workDir.String(), 0755); err != nil {
+    panic(err)
+  }
+}
+
+func prepareDB() {
   var err error
 
   var database bytes.Buffer
 
-  database.WriteString(os.Getenv("HOME"))
+  if dir, err := os.UserHomeDir(); err == nil {
+    database.WriteString(dir)
+  } else {
+    panic(err)
+  }
 
-  database.WriteString("/.wp.sqlite3")
+  database.WriteString("/.wp/database.sqlite3")
 
-  DB, err = gorm.Open("sqlite3", database.String())
-
-  if err != nil {
+  if DB, err = gorm.Open("sqlite3", database.String()); err != nil {
     panic("failed to connect database")
   }
 }
