@@ -1,7 +1,7 @@
 package models
 
 import (
-  "github.com/jinzhu/gorm"
+  "time"
 
   . "github.com/tksasha/wp/config/db"
   _ "github.com/tksasha/wp/config"
@@ -12,8 +12,11 @@ func init() {
 }
 
 type Phrase struct {
-  gorm.Model
+  ID          uint        `gorm:"primary_key" json:"id"`
+  CreatedAt   time.Time   `json:"-"`
+  UpdatedAt   time.Time   `json:"-"`
+  DeletedAt   *time.Time  `sql:"index" json:"-"`
 
-  Text        string `gorm:"type:text;unique;not null"`
-  Translation string `gorm:"type:text;unique;not null"`
+  Text        string      `gorm:"type:text;unique;not null" json:"text"`
+  Translation string      `gorm:"type:text;unique;not null" json:"translation"`
 }

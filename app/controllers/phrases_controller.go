@@ -3,6 +3,7 @@ package controllers
 import (
   "fmt"
   "os"
+  "encoding/json"
 
   . "github.com/tksasha/wp/config/db"
   . "github.com/tksasha/wp/app/models"
@@ -25,12 +26,7 @@ func (c PhrasesController) Index() {
 
   DB.Find(&collection)
 
-  fmt.Println()
-  fmt.Printf("%4s %-40s %-40s\n", "ID", "Phrase", "Translation")
-  fmt.Println()
-
-  for _, resource := range collection {
-    fmt.Printf("%4d %-40s %-40s\n", resource.ID, resource.Text, resource.Translation)
+  if err := json.NewEncoder(os.Stdout).Encode(collection); err != nil {
+    panic(err)
   }
-  fmt.Println()
 }
