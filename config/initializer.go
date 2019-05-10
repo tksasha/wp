@@ -10,15 +10,17 @@ import (
   . "github.com/tksasha/wp/config/db"
 )
 
+var workDir bytes.Buffer
+
 func init() {
   prepareWorkDir()
+
+  prepareFiles()
 
   prepareDB()
 }
 
 func prepareWorkDir() {
-  var workDir bytes.Buffer
-
   if dir, err := os.UserHomeDir(); err == nil {
     workDir.WriteString(dir)
   } else {
@@ -32,18 +34,28 @@ func prepareWorkDir() {
   }
 }
 
+func prepareFiles() {
+  files := [2]string { "/PHRASE", "/ANSWER" }
+
+  for _, file := range files {
+    path := workDir
+
+    path.WriteString(file)
+
+    if fd, err := os.OpenFile(path.String(), os.O_CREATE, 0644); err != nil {
+      panic(err)
+    } else {
+      defer fd.Close()
+    }
+  }
+}
+
 func prepareDB() {
   var err error
 
-  var database bytes.Buffer
+  database := workDir
 
-  if dir, err := os.UserHomeDir(); err == nil {
-    database.WriteString(dir)
-  } else {
-    panic(err)
-  }
-
-  database.WriteString("/.wp/database.sqlite3")
+  database.WriteString("/database.sqlite3")
 
   if DB, err = gorm.Open("sqlite3", database.String()); err != nil {
     panic("failed to connect database")
