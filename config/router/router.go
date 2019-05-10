@@ -19,6 +19,10 @@ func Router() {
       new(PhrasesController).Create()
     case "list":
       new(PhrasesController).Index()
+    case "say":
+      new(PhrasesController).Show()
+    case "show":
+      new(PhrasesController).Show()
     default:
       fmt.Println("undefined command")
   }
